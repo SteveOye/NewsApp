@@ -1,0 +1,18 @@
+<resources>
+    <string name="app_name">The Guardian</string>
+
+    <!-- dummy text -->
+    <string name="title">headline</string>
+    <string name="time">Thur, Oct 1, \'18</string>
+
+    <!-- error messages -->
+    <string name="no_news_feed_found">No News Feed Found</string>
+    <string name="no_internet_connection">Whoops! There seems to be a problem connecting to the server.
+        Try checking your internet connection and try again.</string>
+
+    <!-- fragment titles -->
+    <string name="news">News</string>
+    <string name="sport">Sport</string>
+    <string name="lifestyle">LifeStyle</string>
+    <string name="technology">Tech</string>
+</resources>

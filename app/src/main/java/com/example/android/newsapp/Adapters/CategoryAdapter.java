@@ -1,4 +1,4 @@
-package com.example.android.newsapp;
+package com.example.android.newsapp.Adapters;
 
 import android.content.Context;
 import android.support.v4.app.Fragment;
@@ -9,6 +9,7 @@ import com.example.android.newsapp.Fragments.LifestyleFragment;
 import com.example.android.newsapp.Fragments.NewsFragment;
 import com.example.android.newsapp.Fragments.SportFragment;
 import com.example.android.newsapp.Fragments.TechnologyFragment;
+import com.example.android.newsapp.R;
 
 public class CategoryAdapter extends FragmentPagerAdapter {
 

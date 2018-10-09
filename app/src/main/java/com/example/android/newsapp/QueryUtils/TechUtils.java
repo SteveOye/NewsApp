@@ -1,6 +1,9 @@
-package com.example.android.newsapp;
+package com.example.android.newsapp.QueryUtils;
 
+import android.net.Uri;
 import android.util.Log;
+
+import com.example.android.newsapp.NewsFeed;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -17,44 +20,46 @@ import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
 
-public final class Utils {
-    private static final String TAG = Utils.class.getSimpleName();
-    public static final String LOG_TAG = Utils.class.getSimpleName();
+public class TechUtils {
+    private static final String TAG = TechUtils.class.getSimpleName();
+    private static final String LOG_TAG = TechUtils.class.getSimpleName();
+    private static final int MAX_CONNECTION_TIMEOUT= 15000;
+    private static final int MAX_READ_TIME= 10000;
 
-    public static List<NewsFeed> fetchNewsFeed(String requestUrl){
-        Log.i(LOG_TAG, "TEST:  fetchNewsFeed called");
-        URL url = createUrl(requestUrl);
-        String jsonResponse = null;
-
-        try {
-            jsonResponse = makeHttpConnection(url);
-        } catch (IOException e) {
-            Log.e(TAG, "fetchNewsFeed: problem fetchNewsFeed", e);
-        }
-        // Extract relevant fields from the JSON response and create a list of {@link NewsFeed}
-        List<NewsFeed> newsFeeds = extractFeatureFromJson(jsonResponse);
-        return newsFeeds;
-    }
-
-    /*
-    * Convert the string to URL
-    * to establish the connection.
-     */
-    private static URL createUrl(String stringUrl){
-        Log.i(LOG_TAG, "TEST:  createUrl() called");
-        URL url = null;
-        try {
-            url = new URL(stringUrl);
-        } catch (MalformedURLException e) {
-            Log.e(TAG, "createUrl: Error creating URL", e);
-        }
+    public static String StringUrlBuilder(){
+        Uri.Builder builder = new Uri.Builder();
+        builder.scheme("https")
+                .encodedAuthority("content.guardianapis.com")
+                .appendPath("search")
+                .appendQueryParameter("order-by", "newest")
+                .appendQueryParameter("page-size", "20")
+                .appendQueryParameter("show-tags", "contributor")
+                .appendQueryParameter("show-fields", "thumbnail")
+                .appendQueryParameter("q", "technology")
+                .appendQueryParameter("api-key", "3f439ff9-4754-4903-b0d7-ab8e582d2225");
+        String url = builder.build().toString();
         return url;
     }
 
     /*
-    * Establishing the connection with the URL provided
+     * Convert the string to URL
+     * to establish the connection.
      */
-    private static String makeHttpConnection(URL url) throws IOException {
+    public static URL createUrl(){
+        Log.i(LOG_TAG, "TEST:  createUrl() called");
+        String stringUrl = StringUrlBuilder();
+        try {
+            return new URL(stringUrl);
+        } catch (MalformedURLException e) {
+            Log.e(TAG, "createUrl: Error creating URL", e);
+            return null;
+        }
+    }
+
+    /*
+     * Establishing the connection with the URL provided
+     */
+    public static String makeHttpConnection(URL url) throws IOException {
         Log.i(LOG_TAG, "TEST:  makeHttpConnection() called");
         String jsonResponse = " ";
 
@@ -67,15 +72,15 @@ public final class Utils {
         try {
             urlConnection = (HttpURLConnection) url.openConnection();
             urlConnection.setRequestMethod("GET");
-            urlConnection.setConnectTimeout(15000);
-            urlConnection.setReadTimeout(10000);
+            urlConnection.setConnectTimeout(MAX_CONNECTION_TIMEOUT);
+            urlConnection.setReadTimeout(MAX_READ_TIME);
             urlConnection.connect();
-            if (urlConnection.getResponseCode() == 200){
+            if (urlConnection.getResponseCode() == urlConnection.HTTP_OK){
                 inputStream = urlConnection.getInputStream();
                 jsonResponse = readFromStream(inputStream);
             }
         } catch (IOException e) {
-            Log.e(TAG, "makeHttpConnection: problem making connection", e);;
+            Log.e(TAG, "makeHttpConnection: problem making connection", e);
         }finally {
             if (urlConnection != null) {
                 urlConnection.disconnect();
@@ -104,7 +109,7 @@ public final class Utils {
     }
 
     //extract the relevant feed needed in the listView
-    private static List<NewsFeed> extractFeatureFromJson(String jsonResponse) {
+    public static List<NewsFeed> extractFeatureFromJson(String jsonResponse) {
         Log.i(LOG_TAG, "TEST:  extractFeatureFromJson() called");
 
         List<NewsFeed> newsFeeds = new ArrayList<>();
@@ -114,25 +119,35 @@ public final class Utils {
 
             //Create the JSONObject with the key "response"
             JSONObject responseJSONObject = baseJsonResponse.getJSONObject("response");
-            //JSONObject responseJSONObject = baseJsonResponse.getJSONObject("response");
-
             // Extract the JSONArray associated with the key called "results",
             // which represents a list of news stories.
             JSONArray newsFeedArray = responseJSONObject.getJSONArray("results");
 
-
-            for (int i = 0; i<= newsFeedArray.length(); i++){
+            for (int i = 0; i< newsFeedArray.length(); i++){
                 JSONObject currentNewsFeed = newsFeedArray.getJSONObject(i);
                 JSONObject fields = currentNewsFeed.getJSONObject("fields");
                 String image = fields.getString("thumbnail");
                 String webTitle = currentNewsFeed.getString("webTitle");
                 String date = currentNewsFeed.getString("webPublicationDate");
                 String url = currentNewsFeed.getString("webUrl");
-                NewsFeed newsFeed = new NewsFeed(image,webTitle,date,url);
+
+                //Extract the JSONArray with the key "tag"
+                JSONArray tagsArray = currentNewsFeed.getJSONArray("tags");
+                //Declare String variable to hold author name
+                String author = " ";
+                if (tagsArray.length() == 0) {
+                    author = null;
+                } else {
+                    for (int j = 0; j<tagsArray.length();j++) {
+                        JSONObject contributorTag = tagsArray.getJSONObject(j);
+                        author = contributorTag.getString("webTitle");
+                    }
+                }
+                NewsFeed newsFeed = new NewsFeed(image,webTitle,date,author,url);
                 newsFeeds.add(newsFeed);
             }
         } catch (JSONException e) {
-            Log.e("Utils", "Problem parsing the NewsFeed JSON results", e);
+            Log.e("TechUtils", "Problem parsing the NewsFeed JSON results", e);
         }
         return newsFeeds;
     }

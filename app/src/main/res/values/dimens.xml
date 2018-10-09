@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="two_dp">2dp</dimen>
+    <dimen name="eight_dp">8dp</dimen>
+    <dimen name="image_height">100dp</dimen>
+    <dimen name="card_padding">16dp</dimen>
+    <dimen name="error_textsize">16sp</dimen>
+    <dimen name="title_textSize">18sp</dimen>
+</resources>

@@ -2,8 +2,9 @@
 <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:elevation="8dp"
-    android:padding="16dp">
+    xmlns:tools="http://schemas.android.com/tools"
+    android:elevation="@dimen/eight_dp"
+    android:padding="@dimen/card_padding">
 
     <RelativeLayout
         android:id="@+id/parentLayout"
@@ -13,20 +14,35 @@
         <ImageView
             android:id="@+id/article_image"
             android:layout_width="match_parent"
-            android:layout_height="100dp"
-            android:scaleType="fitXY"/>
+            android:layout_height="@dimen/image_height"
+            android:scaleType="fitXY"
+            android:contentDescription="@string/app_name"/>
 
         <TextView
             android:id="@+id/article_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/article_image"
-            android:layout_marginTop="2dp"
-            android:layout_marginBottom="2dp"
-            android:layout_marginLeft="2dp"
+            android:layout_marginTop="@dimen/two_dp"
+            android:layout_marginBottom="@dimen/two_dp"
+            android:layout_marginLeft="@dimen/two_dp"
+            android:layout_marginStart="@dimen/two_dp"
             android:textColor="@android:color/black"
-            android:textSize="18sp"
-            android:text="@string/title"/>
+            android:textSize="@dimen/title_textSize"
+            tools:text="@string/title"/>
+
+
+
+        <TextView
+            android:id="@+id/author_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/article_title"
+            android:layout_marginTop="@dimen/two_dp"
+            android:layout_marginLeft="@dimen/two_dp"
+            android:layout_marginStart="@dimen/two_dp"
+            android:paddingBottom="@dimen/eight_dp"
+            tools:text="@string/name"/>
 
         <TextView
             android:id="@+id/article_date"
@@ -34,9 +50,10 @@
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
             android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
             android:layout_below="@id/article_title"
-            android:paddingBottom="8dp"
-            android:text="@string/time" />
+            android:paddingBottom="@dimen/eight_dp"
+            tools:text="@string/time" />
     </RelativeLayout>
 
 </android.support.v7.widget.CardView>

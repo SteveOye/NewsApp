@@ -2,8 +2,9 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_marginLeft="8dp"
-    android:layout_marginRight="8dp">
+    android:id="@+id/relativeLayout"
+    android:layout_marginLeft="@dimen/eight_dp"
+    android:layout_marginRight="@dimen/eight_dp">
 
     <ListView
         android:id="@+id/listView"
@@ -11,8 +12,8 @@
         android:layout_height="match_parent"
         android:clipToPadding="false"
         android:divider="@android:color/transparent"
-        android:dividerHeight="8dp"
-        android:paddingTop="8dp"
+        android:dividerHeight="@dimen/eight_dp"
+        android:paddingTop="@dimen/eight_dp"
         android:scrollbars="none" />
 
     <!-- TextView for holding the
@@ -22,7 +23,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
-        android:textSize="16sp"
+        android:textSize="@dimen/error_textsize"
         android:visibility="gone"
         android:textAlignment="center"/>
 
@@ -35,5 +36,5 @@
         android:layout_gravity="center"
         android:scaleX="0.10"
         android:scaleY="0.10"
-        android:visibility="visible" />
+        android:visibility="visible"/>
 </RelativeLayout>

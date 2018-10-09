@@ -21,8 +21,8 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.example.android.newsapp.NewsFeed;
-import com.example.android.newsapp.NewsFeedAdapter;
-import com.example.android.newsapp.NewsFeedLoader;
+import com.example.android.newsapp.Adapters.NewsFeedAdapter;
+import com.example.android.newsapp.Loaders.NewsFeedLoader;
 import com.example.android.newsapp.R;
 
 import java.util.ArrayList;
@@ -37,11 +37,10 @@ public class NewsFragment extends Fragment implements LoaderManager.LoaderCallba
 
     private NewsFeedAdapter mAdapter;
     private static int LOADER_ID = 0;
-    public static final String NEWS_URL =
-            "https://content.guardianapis.com/search?use-date=published&show-fields=thumbnail&page-size=20&api-key=3f439ff9-4754-4903-b0d7-ab8e582d2225\n";
+
     public static final String LOG_TAG = NewsFragment.class.getName();
 
-    public NewsFragment(){
+    public NewsFragment() {
     }
 
     @Nullable
@@ -50,6 +49,7 @@ public class NewsFragment extends Fragment implements LoaderManager.LoaderCallba
         View view = inflater.inflate(R.layout.fragment_layout, container, false);
         listView = view.findViewById(R.id.listView);
         mEmptyStateTextView = view.findViewById(R.id.no_data);
+        loadingIndicator = view.findViewById(R.id.progressBar);
 
         listView.setEmptyView(mEmptyStateTextView);
         mAdapter = new NewsFeedAdapter(getActivity(), new ArrayList<NewsFeed>());
@@ -71,38 +71,37 @@ public class NewsFragment extends Fragment implements LoaderManager.LoaderCallba
             }
         });
 
-        ConnectivityManager connectivityManager = (ConnectivityManager)
+        ConnectivityManager connMgr = (ConnectivityManager)
                 getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
+        // Get details on the currently active default data network
+        NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
+        // If there is a network connection, fetch data
         if (networkInfo != null && networkInfo.isConnected()) {
             getLoaderManager().initLoader(LOADER_ID, null, this);
         } else {
             loadingIndicator.setVisibility(View.GONE);
             mEmptyStateTextView.setText(R.string.no_internet_connection);
         }
+
         return view;
     }
 
     @Override
     public Loader<List<NewsFeed>> onCreateLoader(int id, Bundle args) {
         Log.i(LOG_TAG, "TEST: NewsFragment onCreateLoader() called");
-        return new NewsFeedLoader(getActivity(), NEWS_URL);
+        return new NewsFeedLoader(getActivity());
     }
 
     @Override
     public void onLoadFinished(Loader<List<NewsFeed>> loader, List<NewsFeed> data) {
         Log.i(LOG_TAG, "TEST: NewsFragment onLoaderFinished() called");
-        // Clear the adapter of previous newsfeed data
-        mAdapter.clear();
-        View loadingIndicator = getActivity().findViewById(R.id.progressBar);
+
+        loadingIndicator = getView().findViewById(R.id.progressBar);
         loadingIndicator.setVisibility(View.GONE);
-        // If there is a valid list of {@link NewsFeed}s, then add them to the adapter's
-        // data set. This will trigger the ListView to update.
-        if (data != null && !data.isEmpty()) {
-            mAdapter.addAll(data);
-            // Set empty state text to display "No NewsFeed found."
-            mEmptyStateTextView.setText(R.string.no_news_feed_found);
-        }
+        // Clear the adapter of previous newsFeed data
+        mAdapter.clear();
+        mAdapter.addAll(data);
+        mEmptyStateTextView.setText(R.string.no_news_feed_found);
     }
 
     @Override

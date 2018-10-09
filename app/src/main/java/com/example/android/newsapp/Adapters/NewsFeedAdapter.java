@@ -1,4 +1,4 @@
-package com.example.android.newsapp;
+package com.example.android.newsapp.Adapters;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
@@ -11,6 +11,8 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.example.android.newsapp.NewsFeed;
+import com.example.android.newsapp.R;
 import com.squareup.picasso.Picasso;
 
 import java.text.ParseException;
@@ -50,6 +52,9 @@ public class NewsFeedAdapter extends ArrayAdapter<NewsFeed> {
 
         TextView articleTitle = listItemView.findViewById(R.id.article_title);
         articleTitle.setText(currentNewsFeed.getHeadLine());
+
+        TextView authorName = listItemView.findViewById(R.id.author_name);
+        authorName.setText(currentNewsFeed.getAuthorName());
 
         /*
          * init the textView

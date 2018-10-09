@@ -15,4 +15,6 @@
     <string name="sport">Sport</string>
     <string name="lifestyle">LifeStyle</string>
     <string name="technology">Tech</string>
+    <string name="name">name</string>
+    <string name="tag">Author:</string>
 </resources>
